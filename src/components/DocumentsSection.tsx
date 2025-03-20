@@ -11,17 +11,19 @@ import Container from '@/components/layout/Container';
 interface DocumentsSectionProps {
   documents: UploadedDocument[];
   onSelectDocument: (document: UploadedDocument) => void;
+  sectionTitle?: string;
 }
 
 const DocumentsSection: React.FC<DocumentsSectionProps> = ({ 
   documents, 
-  onSelectDocument 
+  onSelectDocument,
+  sectionTitle = "Teammate Knowledge"
 }) => {
   return (
     <div className="space-y-5">
       <Container withGradientBorder className="inline-block mb-5">
         <div className="px-4 py-2 text-base font-medium">
-          Teammate Knowledge
+          {sectionTitle}
         </div>
       </Container>
       
@@ -45,7 +47,7 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
             variant="ghost" 
             className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 px-4"
           >
-            Manage Knowledge <ChevronRight size={16} className="ml-1" />
+            Manage {sectionTitle} <ChevronRight size={16} className="ml-1" />
           </Button>
         </div>
       </div>

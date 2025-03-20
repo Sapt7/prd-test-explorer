@@ -10,9 +10,14 @@ import { formatFileSize } from '@/utils/testCaseUtils';
 interface UploadSectionProps {
   onFileUploaded: (fileName: string) => void;
   className?: string;
+  uploadLabel?: string;
 }
 
-const UploadSection: React.FC<UploadSectionProps> = ({ onFileUploaded, className }) => {
+const UploadSection: React.FC<UploadSectionProps> = ({ 
+  onFileUploaded, 
+  className,
+  uploadLabel = "Upload Document" 
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -120,9 +125,9 @@ const UploadSection: React.FC<UploadSectionProps> = ({ onFileUploaded, className
                 <File className="h-7 w-7 text-primary" />
               </div>
               <div>
-                <h3 className="text-lg font-medium">Upload PRD Document</h3>
+                <h3 className="text-lg font-medium">{uploadLabel}</h3>
                 <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
-                  Drag & drop your PRD file here, or click to browse
+                  Drag & drop your file here, or click to browse
                 </p>
               </div>
               <Button 

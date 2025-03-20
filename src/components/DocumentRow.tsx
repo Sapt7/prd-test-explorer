@@ -4,7 +4,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { FileText, MoreVertical, Bell, BellOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { UploadedDocument } from '@/types';
-import { formatDate } from '@/utils/formatUtils';
+import { formatDate, formatFileSize } from '@/utils/formatUtils';
 
 interface DocumentRowProps {
   document: UploadedDocument;
@@ -41,15 +41,6 @@ const DocumentRow: React.FC<DocumentRowProps> = ({ document, onSelect }) => {
       </TableCell>
     </TableRow>
   );
-};
-
-// Helper function to format file size
-const formatFileSize = (bytes: number): string => {
-  if (bytes === 0) return '-';
-  const k = 1024;
-  const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 };
 
 export default DocumentRow;

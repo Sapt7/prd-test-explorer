@@ -9,12 +9,15 @@ import TestCasePreview from '@/components/TestCasePreview';
 import DocumentsSection from '@/components/DocumentsSection';
 import { TestCase, UploadedDocument } from '@/types';
 import { generateMockData } from '@/utils/testCaseUtils';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { FileText, TestTube } from 'lucide-react';
 
 const Index = () => {
   const [document, setDocument] = useState<UploadedDocument | null>(null);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [selectedTestCase, setSelectedTestCase] = useState<TestCase | null>(null);
   const [isUploaded, setIsUploaded] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>("testEnvironment");
 
   // Initialize with some demo documents
   useEffect(() => {
@@ -25,12 +28,17 @@ const Index = () => {
     setDocuments(demoDocuments);
   }, []);
 
-  const handleFileUploaded = (fileName: string) => {
+  const handleFileUploaded = (fileName: string, isKnowledge: boolean = false) => {
     // For demonstration, generate mock data
     const mockData = generateMockData(fileName);
-    setDocument(mockData);
-    setDocuments(prev => [mockData, ...prev]);
-    setIsUploaded(true);
+    
+    if (isKnowledge) {
+      setDocuments(prev => [mockData, ...prev]);
+    } else {
+      setDocument(mockData);
+      setDocuments(prev => [mockData, ...prev]);
+      setIsUploaded(true);
+    }
   };
 
   const handleSelectDocument = (doc: UploadedDocument) => {
@@ -95,69 +103,111 @@ const Index = () => {
       
       <main className="flex-1 py-8">
         <Container>
-          {!isUploaded ? (
-            <div className="space-y-10">
-              <div className="max-w-2xl mx-auto">
-                <h2 className="text-2xl font-semibold mb-6 text-center">QA Automation Tool</h2>
-                <p className="text-muted-foreground text-center mb-8">
-                  Upload a Product Requirement Document to automatically generate and execute test cases.
-                </p>
-                <UploadSection onFileUploaded={handleFileUploaded} />
-              </div>
-              
-              {documents.length > 0 && (
-                <DocumentsSection 
-                  documents={documents} 
-                  onSelectDocument={handleSelectDocument} 
-                />
-              )}
-            </div>
-          ) : (
-            document && (
-              <div className="space-y-6 animate-scale-in">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <PRDSummary summary={document.summary!} />
-                  
-                  <div className="flex flex-col gap-6">
-                    <UploadSection 
-                      onFileUploaded={handleFileUploaded} 
-                      className="shadow-none border"
-                    />
-                    
-                    <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg border">
-                      <p className="font-medium mb-1">Current Document</p>
-                      <p>{document.name} • {document.testCases?.length} test cases</p>
-                    </div>
-                  </div>
+          <Tabs 
+            value={activeTab} 
+            onValueChange={setActiveTab} 
+            className="w-full"
+          >
+            <TabsList className="grid grid-cols-2 w-64 mx-auto mb-8">
+              <TabsTrigger value="knowledge" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                <span>Knowledge</span>
+              </TabsTrigger>
+              <TabsTrigger value="testEnvironment" className="flex items-center gap-2">
+                <TestTube className="h-4 w-4" />
+                <span>Test Environment</span>
+              </TabsTrigger>
+            </TabsList>
+            
+            {/* Knowledge Tab Content */}
+            <TabsContent value="knowledge" className="mt-0 space-y-6 animate-in fade-in-50">
+              <div className="space-y-10">
+                <div className="max-w-2xl mx-auto">
+                  <h2 className="text-2xl font-semibold mb-6 text-center">Knowledge Base</h2>
+                  <p className="text-muted-foreground text-center mb-8">
+                    Upload documents to enhance the knowledge base of the QA Automation Tool.
+                  </p>
+                  <UploadSection 
+                    onFileUploaded={(fileName) => handleFileUploaded(fileName, true)} 
+                    uploadLabel="Upload Knowledge Document"
+                  />
                 </div>
                 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                  <div className="lg:col-span-2">
-                    <TestCaseList 
-                      testCases={document.testCases || []} 
-                      onTestCaseSelect={handleTestCaseSelect}
-                      onTestCasesUpdate={handleTestCasesUpdate}
-                    />
-                  </div>
-                  
-                  <div className="lg:col-span-1">
-                    <TestCasePreview 
-                      testCase={selectedTestCase}
-                      onClose={handleClosePreview}
-                      onTestCaseUpdate={handleTestCaseUpdate}
-                    />
-                  </div>
-                </div>
-                
-                {documents.length > 1 && (
+                {documents.length > 0 && (
                   <DocumentsSection 
-                    documents={documents.filter(doc => doc.id !== document.id)} 
+                    documents={documents} 
                     onSelectDocument={handleSelectDocument} 
+                    sectionTitle="Available Knowledge"
                   />
                 )}
               </div>
-            )
-          )}
+            </TabsContent>
+            
+            {/* Test Environment Tab Content */}
+            <TabsContent value="testEnvironment" className="mt-0 space-y-6 animate-in fade-in-50">
+              {!isUploaded ? (
+                <div className="space-y-10">
+                  <div className="max-w-2xl mx-auto">
+                    <h2 className="text-2xl font-semibold mb-6 text-center">Test Environment</h2>
+                    <p className="text-muted-foreground text-center mb-8">
+                      Upload a Product Requirement Document to automatically generate and execute test cases.
+                    </p>
+                    <UploadSection 
+                      onFileUploaded={handleFileUploaded} 
+                      uploadLabel="Upload PRD Document"
+                    />
+                  </div>
+                  
+                  {documents.length > 0 && (
+                    <DocumentsSection 
+                      documents={documents} 
+                      onSelectDocument={handleSelectDocument} 
+                      sectionTitle="Previous Test Documents"
+                    />
+                  )}
+                </div>
+              ) : (
+                document && (
+                  <div className="space-y-6 animate-scale-in">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <PRDSummary summary={document.summary!} />
+                      
+                      <div className="flex flex-col gap-6">
+                        <UploadSection 
+                          onFileUploaded={handleFileUploaded} 
+                          className="shadow-none border"
+                          uploadLabel="Upload PRD Document"
+                        />
+                        
+                        <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg border">
+                          <p className="font-medium mb-1">Current Document</p>
+                          <p>{document.name} • {document.testCases?.length} test cases</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      <div className="lg:col-span-2">
+                        <TestCaseList 
+                          testCases={document.testCases || []} 
+                          onTestCaseSelect={handleTestCaseSelect}
+                          onTestCasesUpdate={handleTestCasesUpdate}
+                        />
+                      </div>
+                      
+                      <div className="lg:col-span-1">
+                        <TestCasePreview 
+                          testCase={selectedTestCase}
+                          onClose={handleClosePreview}
+                          onTestCaseUpdate={handleTestCaseUpdate}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )
+              )}
+            </TabsContent>
+          </Tabs>
         </Container>
       </main>
     </div>
