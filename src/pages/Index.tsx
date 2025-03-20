@@ -1,24 +1,42 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '@/components/layout/Header';
 import Container from '@/components/layout/Container';
 import UploadSection from '@/components/UploadSection';
 import PRDSummary from '@/components/PRDSummary';
 import TestCaseList from '@/components/TestCaseList';
 import TestCasePreview from '@/components/TestCasePreview';
+import DocumentsSection from '@/components/DocumentsSection';
 import { TestCase, UploadedDocument } from '@/types';
 import { generateMockData } from '@/utils/testCaseUtils';
 
 const Index = () => {
   const [document, setDocument] = useState<UploadedDocument | null>(null);
+  const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const [selectedTestCase, setSelectedTestCase] = useState<TestCase | null>(null);
   const [isUploaded, setIsUploaded] = useState(false);
+
+  // Initialize with some demo documents
+  useEffect(() => {
+    const demoDocuments = [
+      generateMockData('Merchant Education Guide'),
+      generateMockData('SupportSample_External')
+    ];
+    setDocuments(demoDocuments);
+  }, []);
 
   const handleFileUploaded = (fileName: string) => {
     // For demonstration, generate mock data
     const mockData = generateMockData(fileName);
     setDocument(mockData);
+    setDocuments(prev => [mockData, ...prev]);
     setIsUploaded(true);
+  };
+
+  const handleSelectDocument = (doc: UploadedDocument) => {
+    setDocument(doc);
+    setIsUploaded(true);
+    setSelectedTestCase(null);
   };
 
   const handleTestCaseSelect = (testCase: TestCase) => {
@@ -39,6 +57,11 @@ const Index = () => {
           setSelectedTestCase(updated);
         }
       }
+
+      // Update the documents list as well
+      setDocuments(prev => 
+        prev.map(doc => doc.id === document.id ? { ...doc, testCases: updatedTestCases } : doc)
+      );
     }
   };
 
@@ -54,6 +77,11 @@ const Index = () => {
       });
       
       setSelectedTestCase(updatedTestCase);
+
+      // Update the documents list as well
+      setDocuments(prev => 
+        prev.map(doc => doc.id === document.id ? { ...doc, testCases: updatedTestCases } : doc)
+      );
     }
   };
 
@@ -62,18 +90,27 @@ const Index = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
       
       <main className="flex-1 py-8">
         <Container>
           {!isUploaded ? (
-            <div className="max-w-2xl mx-auto">
-              <h2 className="text-2xl font-semibold mb-6 text-center">QA Automation Tool</h2>
-              <p className="text-muted-foreground text-center mb-8">
-                Upload a Product Requirement Document to automatically generate and execute test cases.
-              </p>
-              <UploadSection onFileUploaded={handleFileUploaded} />
+            <div className="space-y-10">
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-2xl font-semibold mb-6 text-center">QA Automation Tool</h2>
+                <p className="text-muted-foreground text-center mb-8">
+                  Upload a Product Requirement Document to automatically generate and execute test cases.
+                </p>
+                <UploadSection onFileUploaded={handleFileUploaded} />
+              </div>
+              
+              {documents.length > 0 && (
+                <DocumentsSection 
+                  documents={documents} 
+                  onSelectDocument={handleSelectDocument} 
+                />
+              )}
             </div>
           ) : (
             document && (
@@ -111,6 +148,13 @@ const Index = () => {
                     />
                   </div>
                 </div>
+                
+                {documents.length > 1 && (
+                  <DocumentsSection 
+                    documents={documents.filter(doc => doc.id !== document.id)} 
+                    onSelectDocument={handleSelectDocument} 
+                  />
+                )}
               </div>
             )
           )}
