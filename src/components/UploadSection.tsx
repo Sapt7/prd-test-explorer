@@ -1,11 +1,10 @@
-
-import React, { useState, useRef } from 'react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { File, Upload, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { formatFileSize } from '@/utils/testCaseUtils';
+import React, { useState, useRef } from "react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { File, Upload, X } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
+import { formatFileSize } from "@/utils/testCaseUtils";
 
 interface UploadSectionProps {
   onFileUploaded: (fileName: string) => void;
@@ -13,10 +12,10 @@ interface UploadSectionProps {
   uploadLabel?: string;
 }
 
-const UploadSection: React.FC<UploadSectionProps> = ({ 
-  onFileUploaded, 
+const UploadSection: React.FC<UploadSectionProps> = ({
+  onFileUploaded,
   className,
-  uploadLabel = "Upload Document" 
+  uploadLabel = "Upload Document",
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [file, setFile] = useState<File | null>(null);
@@ -37,7 +36,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     setIsDragging(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
       const droppedFile = e.dataTransfer.files[0];
       handleFile(droppedFile);
@@ -53,35 +52,35 @@ const UploadSection: React.FC<UploadSectionProps> = ({
 
   const handleFile = (selectedFile: File) => {
     // Check file type (you might want to expand this for your use case)
-    const validTypes = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'];
-    
+    const validTypes = ["application/pdf"];
+
     if (!validTypes.includes(selectedFile.type)) {
       toast({
         title: "Unsupported file type",
-        description: "Please upload a PDF, DOC, DOCX or TXT file.",
-        variant: "destructive"
+        description: "Please upload a PDF file.",
+        variant: "destructive",
       });
       return;
     }
-    
+
     // Check file size (10MB limit)
     if (selectedFile.size > 10 * 1024 * 1024) {
       toast({
         title: "File too large",
         description: "Please upload a file smaller than 10MB.",
-        variant: "destructive"
+        variant: "destructive",
       });
       return;
     }
-    
+
     setFile(selectedFile);
   };
 
   const handleUpload = () => {
     if (!file) return;
-    
+
     setIsUploading(true);
-    
+
     // Simulate upload process
     setTimeout(() => {
       setIsUploading(false);
@@ -96,7 +95,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
   const handleRemoveFile = () => {
     setFile(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -130,7 +129,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                   Drag & drop your file here, or click to browse
                 </p>
               </div>
-              <Button 
+              <Button
                 onClick={handleBrowseClick}
                 variant="secondary"
                 className="mt-2"
@@ -143,10 +142,10 @@ const UploadSection: React.FC<UploadSectionProps> = ({
                 ref={fileInputRef}
                 className="hidden"
                 onChange={handleFileChange}
-                accept=".pdf,.doc,.docx,.txt"
+                accept=".pdf"
               />
               <p className="text-xs text-muted-foreground mt-3">
-                Supported formats: PDF, DOC, DOCX, TXT (max 10MB)
+                Supported formats: PDF (max 10MB)
               </p>
             </div>
           ) : (
@@ -156,11 +155,13 @@ const UploadSection: React.FC<UploadSectionProps> = ({
               </div>
               <div>
                 <h3 className="text-base font-medium mb-1">{file.name}</h3>
-                <p className="text-sm text-muted-foreground">{formatFileSize(file.size)}</p>
+                <p className="text-sm text-muted-foreground">
+                  {formatFileSize(file.size)}
+                </p>
               </div>
               <div className="flex items-center gap-2 mt-2">
-                <Button 
-                  onClick={handleUpload} 
+                <Button
+                  onClick={handleUpload}
                   className="px-4"
                   disabled={isUploading}
                 >
