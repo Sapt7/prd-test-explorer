@@ -1,12 +1,19 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useNavigate } from "react-router-dom";
 
 interface HeaderProps {
   className?: string;
 }
 
 const Header: React.FC<HeaderProps> = ({ className }) => {
+  const navigate = useNavigate();
+
+  const onLogoClick = () => {
+    navigate(0);
+  };
+
   return (
     <header
       className={cn(
@@ -19,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
         <div className="rounded-md border border-gray overflow-hidden">
           <img src="/images/logo.jpg" alt="" height={50} width={50} />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col cursor-pointer" onClick={onLogoClick}>
           <h1 className="text-xl font-semibold tracking-tight">
             Test Case Genie
           </h1>
