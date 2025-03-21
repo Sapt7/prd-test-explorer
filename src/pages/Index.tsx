@@ -78,6 +78,12 @@ const Index = () => {
           description: `${file.name} file summary processed.`,
         });
       })
+      .catch(() => {
+        toast({
+          title: "Summary could not be generated",
+          description: `${file.name} file could not processed.`,
+        });
+      })
       .finally(() => {
         setDocLoad(false);
       });
@@ -88,6 +94,12 @@ const Index = () => {
         toast({
           title: "Test Cases Generated successful",
           description: `${file.name} file test case processed.`,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Test Cases could not be generated",
+          description: `${file.name} file could not processed.`,
         });
       })
       .finally(() => {
