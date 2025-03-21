@@ -113,134 +113,73 @@ const Index = () => {
 
       <main className="flex-1 py-8">
         <Container>
-          <Tabs
-            value={activeTab}
-            onValueChange={setActiveTab}
-            className="w-full"
-          >
-            <TabsList className="grid grid-cols-2 w-64 mx-auto mb-8">
-              <TabsTrigger
-                value="knowledge"
-                className="flex items-center gap-2"
-              >
-                <FileText className="h-4 w-4" />
-                <span>Knowledge</span>
-              </TabsTrigger>
-              <TabsTrigger
-                value="testEnvironment"
-                className="flex items-center gap-2"
-              >
-                <TestTube className="h-4 w-4" />
-                <span>Test Environment</span>
-              </TabsTrigger>
-            </TabsList>
-
-            {/* Knowledge Tab Content */}
-            <TabsContent
-              value="knowledge"
-              className="mt-0 space-y-6 animate-in fade-in-50"
-            >
-              <div className="space-y-10">
-                <div className="max-w-2xl mx-auto">
-                  <h2 className="text-2xl font-semibold mb-6 text-center">
-                    Knowledge Base
-                  </h2>
-                  <p className="text-muted-foreground text-center mb-8">
-                    Upload documents to enhance the knowledge base of the QA
-                    Automation Tool.
-                  </p>
-                  <UploadSection
-                    onFileUploaded={(fileName) =>
-                      handleFileUploaded(fileName, true)
-                    }
-                    uploadLabel="Upload Knowledge Document"
-                  />
-                </div>
-
-                {documents.length > 0 && (
-                  <DocumentsSection
-                    documents={documents}
-                    onSelectDocument={handleSelectDocument}
-                    sectionTitle="Available Knowledge"
-                  />
-                )}
+          {!isUploaded ? (
+            <div className="space-y-10">
+              <div className="max-w-2xl mx-auto">
+                <h2 className="text-2xl font-semibold mb-6 text-center">
+                  Test Environment
+                </h2>
+                <p className="text-muted-foreground text-center mb-8">
+                  Upload a Product Requirement Document to automatically
+                  generate and execute test cases.
+                </p>
+                <UploadSection
+                  onFileUploaded={handleFileUploaded}
+                  uploadLabel="Upload PRD Document"
+                />
               </div>
-            </TabsContent>
 
-            {/* Test Environment Tab Content */}
-            <TabsContent
-              value="testEnvironment"
-              className="mt-0 space-y-6 animate-in fade-in-50"
-            >
-              {!isUploaded ? (
-                <div className="space-y-10">
-                  <div className="max-w-2xl mx-auto">
-                    <h2 className="text-2xl font-semibold mb-6 text-center">
-                      Test Environment
-                    </h2>
-                    <p className="text-muted-foreground text-center mb-8">
-                      Upload a Product Requirement Document to automatically
-                      generate and execute test cases.
-                    </p>
+              {documents.length > 0 && (
+                <DocumentsSection
+                  documents={documents}
+                  onSelectDocument={handleSelectDocument}
+                  sectionTitle="Previous Test Documents"
+                />
+              )}
+            </div>
+          ) : (
+            document && (
+              <div className="space-y-6 animate-scale-in">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <PRDSummary summary={document.summary!} />
+
+                  <div className="flex flex-col gap-6">
                     <UploadSection
                       onFileUploaded={handleFileUploaded}
+                      className="shadow-none border"
                       uploadLabel="Upload PRD Document"
                     />
-                  </div>
 
-                  {documents.length > 0 && (
-                    <DocumentsSection
-                      documents={documents}
-                      onSelectDocument={handleSelectDocument}
-                      sectionTitle="Previous Test Documents"
-                    />
-                  )}
+                    <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg border">
+                      <p className="font-medium mb-1">Current Document</p>
+                      <p>
+                        {document.name} • {document.testCases?.length} test
+                        cases
+                      </p>
+                    </div>
+                  </div>
                 </div>
-              ) : (
-                document && (
-                  <div className="space-y-6 animate-scale-in">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <PRDSummary summary={document.summary!} />
 
-                      <div className="flex flex-col gap-6">
-                        <UploadSection
-                          onFileUploaded={handleFileUploaded}
-                          className="shadow-none border"
-                          uploadLabel="Upload PRD Document"
-                        />
-
-                        <div className="text-sm text-muted-foreground p-4 bg-muted/50 rounded-lg border">
-                          <p className="font-medium mb-1">Current Document</p>
-                          <p>
-                            {document.name} • {document.testCases?.length} test
-                            cases
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      <div className="lg:col-span-2">
-                        <TestCaseList
-                          testCases={document.testCases || []}
-                          onTestCaseSelect={handleTestCaseSelect}
-                          onTestCasesUpdate={handleTestCasesUpdate}
-                        />
-                      </div>
-
-                      <div className="lg:col-span-1">
-                        <TestCasePreview
-                          testCase={selectedTestCase}
-                          onClose={handleClosePreview}
-                          onTestCaseUpdate={handleTestCaseUpdate}
-                        />
-                      </div>
-                    </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <TestCaseList
+                      testCases={document.testCases || []}
+                      onTestCaseSelect={handleTestCaseSelect}
+                      onTestCasesUpdate={handleTestCasesUpdate}
+                    />
                   </div>
-                )
-              )}
-            </TabsContent>
-          </Tabs>
+
+                  <div className="lg:col-span-1">
+                    <TestCasePreview
+                      testCase={selectedTestCase}
+                      onClose={handleClosePreview}
+                      onTestCaseUpdate={handleTestCaseUpdate}
+                    />
+                  </div>
+                </div>
+              </div>
+            )
+          )}
         </Container>
       </main>
     </div>
