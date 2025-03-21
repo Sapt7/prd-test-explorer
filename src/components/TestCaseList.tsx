@@ -28,6 +28,7 @@ interface TestCaseListProps {
   testCases: TestCaseType[];
   onTestCaseSelect: (testCase: TestCaseType) => void;
   className?: string;
+  loading: boolean;
 }
 
 const priorityColorMap = {
@@ -48,6 +49,7 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
   testCases,
   onTestCaseSelect,
   className,
+  loading,
 }) => {
   const [priorities, setPriorities] = useState<string[]>([]);
   const [selectedTestCases, setSelectedTestCases] = useState<Set<string>>(

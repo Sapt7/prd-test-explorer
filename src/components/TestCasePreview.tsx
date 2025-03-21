@@ -21,6 +21,7 @@ interface TestCasePreviewProps {
   onClose: () => void;
   onTestCaseUpdate: (updatedTestCase: TestCaseType) => void;
   className?: string;
+  loading: boolean;
 }
 
 const priorityColorMap = {
@@ -42,6 +43,7 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
   onClose,
   onTestCaseUpdate,
   className,
+  loading,
 }) => {
   const [executing, setExecuting] = React.useState(false);
   const { toast } = useToast();
@@ -138,6 +140,24 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
             <p className="text-sm text-muted-foreground">
               {testCase.description}
             </p>
+          </div>
+
+          <Separator />
+
+          <div>
+            <h3 className="text-sm font-medium mb-2">Pre Conditions</h3>
+            <ol className="space-y-4">
+              {testCase.preconditions.map((precond, index) => (
+                <li key={index} className="space-y-1.5">
+                  <div className="flex gap-2">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                      {index + 1}
+                    </span>
+                    <span className="text-sm font-medium">{precond}</span>
+                  </div>
+                </li>
+              ))}
+            </ol>
           </div>
 
           <Separator />

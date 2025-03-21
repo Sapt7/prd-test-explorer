@@ -13,12 +13,16 @@ interface PRDSummaryProps {
   summary: SummaryType | null;
   className?: string;
   testCases?: TestCaseType[];
+  loading: boolean;
+  testCaseLoading: boolean;
 }
 
 const PRDSummary: React.FC<PRDSummaryProps> = ({
   summary,
   className,
   testCases,
+  loading,
+  testCaseLoading,
 }) => {
   return (
     <Card className={cn("shadow-sm", className)}>

@@ -19,8 +19,10 @@ import { CommonService } from "@/utils/apis/common.service";
 
 const Index = () => {
   const [document, setDocument] = useState<SummaryType | null>(null);
+  const [docLoad, setDocLoad] = useState(false);
   const [documentTestCases, setDocumentTestCases] =
     useState<TestCaseResponse | null>(null);
+  const [documentTestCasesLoad, setDocumentTestCasesLoad] = useState(false);
   const [documents, setDocuments] = useState<UploadedDocument[]>([]);
   const { toast } = useToast();
   const [file, setFile] = useState<File | null>(null);
@@ -65,14 +67,24 @@ const Index = () => {
   }, []);
 
   const handleFileUploaded = (file: File) => {
-    CommonService.getSummary(file).then((res) => {
-      setDocument(res);
-      setIsUploaded(true);
-    });
-    CommonService.getTestData(file).then((res) => {
-      setDocumentTestCases(res);
-      setIsUploaded(true);
-    });
+    setDocLoad(true);
+    setDocumentTestCasesLoad(true);
+    CommonService.getSummary(file)
+      .then((res) => {
+        setDocument(res);
+        setIsUploaded(true);
+      })
+      .finally(() => {
+        setDocLoad(false);
+      });
+    CommonService.getTestData(file)
+      .then((res) => {
+        setDocumentTestCases(res);
+        setIsUploaded(true);
+      })
+      .finally(() => {
+        setDocumentTestCasesLoad(false);
+      });
   };
 
   const handleSelectDocument = (doc: UploadedDocument) => {
@@ -104,7 +116,7 @@ const Index = () => {
 
       <main className="flex-1 py-8">
         <Container>
-          {!isUploaded ? (
+          {!isUploaded || docLoad || documentTestCasesLoad ? (
             <div className="space-y-10">
               <div className="max-w-2xl mx-auto">
                 <h2 className="text-2xl font-semibold mb-6 text-center">
@@ -134,21 +146,27 @@ const Index = () => {
           ) : (
             document && (
               <div className="space-y-6 animate-scale-in">
-                <PRDSummary summary={document!} />
+                <PRDSummary
+                  summary={document}
+                  loading={docLoad}
+                  testCaseLoading={documentTestCasesLoad}
+                />
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-7">
+                  <div className="lg:col-span-6">
                     <TestCaseList
                       testCases={documentTestCases?.test_cases || []}
                       onTestCaseSelect={handleTestCaseSelect}
+                      loading={documentTestCasesLoad}
                     />
                   </div>
 
-                  <div className="lg:col-span-5">
+                  <div className="lg:col-span-6">
                     <TestCasePreview
                       testCase={selectedTestCase}
                       onClose={handleClosePreview}
                       onTestCaseUpdate={handleTestCaseUpdate}
+                      loading={documentTestCasesLoad}
                     />
                   </div>
                 </div>
