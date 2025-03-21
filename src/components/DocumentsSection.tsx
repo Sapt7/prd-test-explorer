@@ -35,15 +35,6 @@ const DocumentsSection: React.FC<DocumentsSectionProps> = ({
             ))}
           </TableBody>
         </Table>
-
-        <div className="p-4 border-t">
-          <Button
-            variant="ghost"
-            className="text-blue-500 hover:text-blue-600 hover:bg-blue-50 px-4"
-          >
-            Manage {sectionTitle} <ChevronRight size={16} className="ml-1" />
-          </Button>
-        </div>
       </div>
     </div>
   );
