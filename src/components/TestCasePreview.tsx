@@ -9,9 +9,8 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { SummaryType, TestCase, TestCaseType } from "@/types";
+import { TestCaseType } from "@/types";
 import { Play, X } from "lucide-react";
 import { executeTestCases } from "@/utils/testCaseUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -36,6 +35,40 @@ const statusColorMap = {
   Passed: "bg-green-50 text-green-600 border-green-200",
   Failed: "bg-red-50 text-red-600 border-red-200",
   Skipped: "bg-purple-50 text-purple-600 border-purple-200",
+};
+
+const Loaders: React.FC<{ className?: string }> = ({ className }) => {
+  return (
+    <div className="flex items-start gap-3 rounded-lg border border-transparent animate-pulse">
+      <div className="flex-1">
+        <div className="flex items-center justify-between mb-1">
+          <div className="h-5 w-28 bg-muted rounded"></div>
+        </div>
+        <div className="flex items-start gap-3 rounded-lg justify-center">
+          <div className="w-4 h-4 rounded-sm bg-muted mt-1 mb-1.5"></div>
+          <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+        </div>
+        <div className="flex items-start gap-3 rounded-lg justify-center">
+          <div className="w-4 h-4 rounded-sm bg-muted mt-1 mb-1.5"></div>
+          <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+        </div>
+        <div className="flex items-start gap-3 rounded-lg justify-center">
+          <div className="w-4 h-4 rounded-sm bg-muted mt-1 mb-1.5"></div>
+          <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TopLoaders: React.FC<{ className?: string }> = ({ className }) => {
+  return (
+    <div className="animate-pulse w-full">
+      <div className="h-4 w-40 bg-muted rounded mt-1 mb-1.5"></div>
+      <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+      <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+    </div>
+  );
 };
 
 const TestCasePreview: React.FC<TestCasePreviewProps> = ({
@@ -87,25 +120,30 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
 
   return (
     <Card className={cn("shadow-sm flex flex-col", className)}>
-      <CardHeader className="pb-3 flex flex-row items-start justify-between">
-        <div>
+      <CardHeader className="pb-3 flex flex-row items-start gap-1 w-full">
+        <div className="flex-1">
           <Badge variant="outline" className="mb-2 text-xs font-normal">
             Test Case Preview
           </Badge>
-          <div className="flex flex-col gap-1">
-            <CardTitle className="text-xl font-semibold">
-              {testCase.coverage}
-            </CardTitle>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-muted-foreground">
-                {testCase.id}
-              </span>
-              <span className="text-muted-foreground">•</span>
-              <span className="text-sm text-muted-foreground">
-                {testCase.description}
-              </span>
+          {loading ? (
+            <div className="w-full">
+              <TopLoaders />
             </div>
-          </div>
+          ) : (
+            <div className="flex flex-col gap-1">
+              <CardTitle className="text-xl font-semibold">
+                {testCase.coverage}
+              </CardTitle>
+              <div className="flex  gap-2 flex-col">
+                <span className="text-sm text-muted-foreground w-40">
+                  {testCase.id}
+                </span>
+                <span className="text-sm text-muted-foreground">
+                  {testCase.description}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-4 w-4" />
@@ -113,90 +151,105 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
       </CardHeader>
 
       <CardContent className="flex-1 overflow-hidden">
-        <div className="flex items-center gap-2 mb-4">
-          <Badge
-            variant="outline"
-            className={cn(
-              "text-xs font-normal border",
-              priorityColorMap[testCase.priority]
-            )}
-          >
-            {testCase.priority}
-          </Badge>
-          {[testCase.priority].map((tag, index) => (
+        {!loading && testCase && (
+          <div className="flex items-center gap-2 mb-4">
             <Badge
-              key={index}
-              variant="secondary"
-              className="text-xs font-normal"
+              variant="outline"
+              className={cn(
+                "text-xs font-normal border",
+                priorityColorMap[testCase.priority]
+              )}
             >
-              {tag}
+              {testCase.priority}
             </Badge>
-          ))}
-        </div>
+            <Badge
+              variant="outline"
+              className={cn("text-xs font-normal border")}
+            >
+              {testCase.test_type}
+            </Badge>
+          </div>
+        )}
 
         <div className="space-y-4">
-          <div>
-            <h3 className="text-sm font-medium mb-2">Description</h3>
-            <p className="text-sm text-muted-foreground">
-              {testCase.description}
-            </p>
-          </div>
+          {loading ? (
+            <TopLoaders />
+          ) : (
+            <div>
+              <h3 className="text-sm font-medium mb-2">Description</h3>
+              <p className="text-sm text-muted-foreground">
+                {testCase.description}
+              </p>
+            </div>
+          )}
 
           <Separator />
 
-          <div>
-            <h3 className="text-sm font-medium mb-2">Pre Conditions</h3>
-            <ol className="space-y-4">
-              {testCase.preconditions.map((precond, index) => (
-                <li key={index} className="space-y-1.5">
-                  <div className="flex gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm font-medium">{precond}</span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          {loading ? (
+            <Loaders />
+          ) : (
+            <div>
+              <h3 className="text-sm font-medium mb-2">Pre Conditions</h3>
+              <ol className="space-y-4">
+                {testCase.preconditions.map((precond, index) => (
+                  <li key={index} className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm font-medium">{precond}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
 
           <Separator />
 
-          <div>
-            <h3 className="text-sm font-medium mb-2">Test Steps</h3>
-            <ol className="space-y-4">
-              {testCase.steps.map((step, index) => (
-                <li key={index} className="space-y-1.5">
-                  <div className="flex gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm font-medium">{step}</span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          {loading ? (
+            <Loaders />
+          ) : (
+            <div>
+              <h3 className="text-sm font-medium mb-2">Test Steps</h3>
+              <ol className="space-y-4">
+                {testCase.steps.map((step, index) => (
+                  <li key={index} className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm font-medium">{step}</span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
 
           <Separator />
 
-          <div>
-            <h3 className="text-sm font-medium mb-2">Expected Result</h3>
-            <ol className="space-y-4">
-              {testCase.expected_results.map((expected_result, index) => (
-                <li key={index} className="space-y-1.5">
-                  <div className="flex gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
-                      {index + 1}
-                    </span>
-                    <span className="text-sm font-medium">
-                      {expected_result}
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ol>
-          </div>
+          {loading ? (
+            <Loaders />
+          ) : (
+            <div>
+              <h3 className="text-sm font-medium mb-2">Expected Result</h3>
+              <ol className="space-y-4">
+                {testCase.expected_results.map((expected_result, index) => (
+                  <li key={index} className="space-y-1.5">
+                    <div className="flex gap-2">
+                      <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                        {index + 1}
+                      </span>
+                      <span className="text-sm font-medium">
+                        {expected_result}
+                      </span>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
         </div>
       </CardContent>
 

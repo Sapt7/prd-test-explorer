@@ -85,12 +85,36 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+        shimmer: {
+          "0%": { transform: "translateX(-100%)" },
+          "100%": { transform: "translateX(100%)" },
+        },
+        fadeIn: {
+          "0%": { opacity: "0.3" },
+          "100%": { opacity: "1" },
+        },
+        "pulse-fade": {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "1" },
+        },
+        "bounce-slight": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-10%)" },
         },
         "fade-in": {
           from: { opacity: "0" },
@@ -121,6 +145,10 @@ export default {
         "slide-in": "slide-in 0.3s ease-out",
         "slide-out": "slide-out 0.3s ease-out",
         "scale-in": "scale-in 0.2s ease-out",
+        shimmer: "shimmer 2s infinite",
+        "pulse-fade": "pulse-fade 1.5s ease-in-out infinite",
+        "bounce-slight": "bounce-slight 1s ease-in-out infinite",
+        reverse: "spin 2s linear infinite reverse",
       },
       backdropFilter: {
         none: "none",

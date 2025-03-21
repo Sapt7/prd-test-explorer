@@ -4,7 +4,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Search, CheckCheck, Play, Filter } from "lucide-react";
+import { Search, CheckCheck, Play, Filter, Loader2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { SummaryType, TestCaseType } from "@/types";
 import { cn } from "@/lib/utils";
@@ -155,8 +155,33 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
     );
   }, [testCases]);
 
+  // Loader for skeleton UI during loading state
+  const TestCaseSkeleton = () => (
+    <div className="space-y-2 mt-2">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <div
+          key={i}
+          className="flex items-start gap-3 p-3 rounded-lg border border-transparent animate-pulse"
+        >
+          <div className="w-4 h-4 rounded-sm bg-muted mt-1"></div>
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1">
+              <div className="flex items-center gap-2">
+                <div className="h-4 w-28 bg-muted rounded"></div>
+                <div className="h-3 w-12 bg-muted rounded"></div>
+              </div>
+              <div className="h-5 w-16 bg-muted rounded-full"></div>
+            </div>
+            <div className="h-4 w-full bg-muted rounded mb-1.5"></div>
+            <div className="h-4 w-3/4 bg-muted rounded"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
-    <Card className={cn("shadow-sm", className)}>
+    <Card className={cn("shadow-sm overflow-hidden", className)}>
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <div>
           <Badge variant="outline" className="mb-2 text-xs font-normal">
@@ -172,6 +197,7 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
               className="pl-9 w-60 h-9"
               value={searchTerm}
               onChange={handleSearchChange}
+              disabled={loading}
             />
           </div>
 
@@ -179,7 +205,12 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="icon" className="h-9 w-9">
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="h-9 w-9"
+                    disabled={loading}
+                  >
                     <Filter className="h-4 w-4" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -217,6 +248,7 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
                 size="icon"
                 className="h-9 w-9"
                 onClick={handleSelectAll}
+                disabled={loading || filteredTestCases.length === 0}
               >
                 <CheckCheck className="h-4 w-4" />
               </Button>
@@ -230,12 +262,21 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
             <TooltipTrigger asChild>
               <Button
                 variant="default"
-                className="h-9"
+                className="h-9 min-w-[100px]"
                 onClick={handleExecute}
-                disabled={executing || selectedTestCases.size === 0}
+                disabled={executing || selectedTestCases.size === 0 || loading}
               >
-                {executing ? "Executing..." : "Execute"}
-                <Play className="ml-2 h-3 w-3" />
+                {executing ? (
+                  <>
+                    <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" />
+                    Executing...
+                  </>
+                ) : (
+                  <>
+                    Execute
+                    <Play className="ml-2 h-3 w-3" />
+                  </>
+                )}
               </Button>
             </TooltipTrigger>
             <TooltipContent>Execute selected test cases</TooltipContent>
@@ -245,7 +286,9 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
       <CardContent className="p-0">
         <ScrollArea className="h-[480px]">
           <div className="px-6 pb-6">
-            {filteredTestCases.length === 0 ? (
+            {loading ? (
+              <TestCaseSkeleton />
+            ) : filteredTestCases.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-60 text-center">
                 <div className="w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-4">
                   <Search className="h-6 w-6 text-muted-foreground" />

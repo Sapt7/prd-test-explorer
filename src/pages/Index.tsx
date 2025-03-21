@@ -116,7 +116,7 @@ const Index = () => {
 
       <main className="flex-1 py-8">
         <Container>
-          {!isUploaded || docLoad || documentTestCasesLoad ? (
+          {!isUploaded && !(docLoad || documentTestCasesLoad) ? (
             <div className="space-y-10">
               <div className="max-w-2xl mx-auto">
                 <h2 className="text-2xl font-semibold mb-6 text-center">
@@ -144,34 +144,33 @@ const Index = () => {
               )}
             </div>
           ) : (
-            document && (
-              <div className="space-y-6 animate-scale-in">
-                <PRDSummary
-                  summary={document}
-                  loading={docLoad}
-                  testCaseLoading={documentTestCasesLoad}
-                />
+            <div className="space-y-6 animate-scale-in">
+              <PRDSummary
+                summary={document}
+                loading={docLoad}
+                testCaseLoading={documentTestCasesLoad}
+                testCasesTotal={documentTestCases?.test_cases?.length || 0}
+              />
 
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                  <div className="lg:col-span-6">
-                    <TestCaseList
-                      testCases={documentTestCases?.test_cases || []}
-                      onTestCaseSelect={handleTestCaseSelect}
-                      loading={documentTestCasesLoad}
-                    />
-                  </div>
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div className="lg:col-span-6">
+                  <TestCaseList
+                    testCases={documentTestCases?.test_cases || []}
+                    onTestCaseSelect={handleTestCaseSelect}
+                    loading={documentTestCasesLoad}
+                  />
+                </div>
 
-                  <div className="lg:col-span-6">
-                    <TestCasePreview
-                      testCase={selectedTestCase}
-                      onClose={handleClosePreview}
-                      onTestCaseUpdate={handleTestCaseUpdate}
-                      loading={documentTestCasesLoad}
-                    />
-                  </div>
+                <div className="lg:col-span-6">
+                  <TestCasePreview
+                    testCase={selectedTestCase}
+                    onClose={handleClosePreview}
+                    onTestCaseUpdate={handleTestCaseUpdate}
+                    loading={documentTestCasesLoad}
+                  />
                 </div>
               </div>
-            )
+            </div>
           )}
         </Container>
       </main>
