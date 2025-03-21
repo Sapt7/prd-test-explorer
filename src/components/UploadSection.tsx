@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, Dispatch, SetStateAction } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,18 +7,23 @@ import { useToast } from "@/hooks/use-toast";
 import { formatFileSize } from "@/utils/testCaseUtils";
 
 interface UploadSectionProps {
-  onFileUploaded: (fileName: string) => void;
+  onFileUploaded: (File: File) => void;
   className?: string;
   uploadLabel?: string;
+  handleFile?: (file: File) => void;
+  file: File;
+  setFile: Dispatch<SetStateAction<File>>;
 }
 
 const UploadSection: React.FC<UploadSectionProps> = ({
   onFileUploaded,
   className,
   uploadLabel = "Upload Document",
+  handleFile,
+  file,
+  setFile,
 }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
@@ -50,32 +55,6 @@ const UploadSection: React.FC<UploadSectionProps> = ({
     }
   };
 
-  const handleFile = (selectedFile: File) => {
-    // Check file type (you might want to expand this for your use case)
-    const validTypes = ["application/pdf"];
-
-    if (!validTypes.includes(selectedFile.type)) {
-      toast({
-        title: "Unsupported file type",
-        description: "Please upload a PDF file.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    // Check file size (10MB limit)
-    if (selectedFile.size > 10 * 1024 * 1024) {
-      toast({
-        title: "File too large",
-        description: "Please upload a file smaller than 10MB.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setFile(selectedFile);
-  };
-
   const handleUpload = () => {
     if (!file) return;
 
@@ -88,7 +67,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
         title: "Upload successful",
         description: `${file.name} has been processed.`,
       });
-      onFileUploaded(file.name);
+      onFileUploaded(file);
     }, 1500);
   };
 
