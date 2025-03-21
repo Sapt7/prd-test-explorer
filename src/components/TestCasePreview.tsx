@@ -66,6 +66,8 @@ const TopLoaders: React.FC<{ className?: string }> = ({ className }) => {
     <div className="animate-pulse w-full">
       <div className="h-4 w-40 bg-muted rounded mt-1 mb-1.5"></div>
       <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
+      <div className="h-4 w-full bg-muted rounded mt-1 mb-10"></div>
+      <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
       <div className="h-4 w-full bg-muted rounded mt-1 mb-1.5"></div>
     </div>
   );
@@ -81,7 +83,7 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
   const [executing, setExecuting] = React.useState(false);
   const { toast } = useToast();
 
-  if (!testCase) {
+  if (!testCase && !loading) {
     return (
       <Card
         className={cn("shadow-sm flex items-center justify-center", className)}
@@ -125,11 +127,7 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
           <Badge variant="outline" className="mb-2 text-xs font-normal">
             Test Case Preview
           </Badge>
-          {loading ? (
-            <div className="w-full">
-              <TopLoaders />
-            </div>
-          ) : (
+          {!loading && testCase && (
             <div className="flex flex-col gap-1">
               <CardTitle className="text-xl font-semibold">
                 {testCase.coverage}
@@ -145,9 +143,11 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
             </div>
           )}
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose}>
-          <X className="h-4 w-4" />
-        </Button>
+        {!loading && (
+          <Button variant="ghost" size="icon" onClick={onClose}>
+            <X className="h-4 w-4" />
+          </Button>
+        )}
       </CardHeader>
 
       <CardContent className="flex-1 overflow-hidden">
