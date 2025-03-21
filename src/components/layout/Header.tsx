@@ -16,10 +16,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
       )}
     >
       <div className="flex items-center space-x-2">
-        <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-400 to-teal-300 flex items-center justify-center">
-          <span className="text-primary-foreground text-lg font-semibold">
-            Q
-          </span>
+        <div className="rounded-md border border-gray overflow-hidden">
+          <img src="/images/logo.jpg" alt="" height={50} width={50} />
         </div>
         <div className="flex flex-col">
           <h1 className="text-xl font-semibold tracking-tight">
