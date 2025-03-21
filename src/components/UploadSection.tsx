@@ -57,18 +57,7 @@ const UploadSection: React.FC<UploadSectionProps> = ({
 
   const handleUpload = () => {
     if (!file) return;
-
-    setIsUploading(true);
-
-    // Simulate upload process
-    setTimeout(() => {
-      setIsUploading(false);
-      toast({
-        title: "Upload successful",
-        description: `${file.name} has been processed.`,
-      });
-      onFileUploaded(file);
-    }, 1500);
+    onFileUploaded(file);
   };
 
   const handleRemoveFile = () => {

@@ -73,6 +73,10 @@ const Index = () => {
       .then((res) => {
         setDocument(res);
         setIsUploaded(true);
+        toast({
+          title: "Summary Extracted successful",
+          description: `${file.name} file summary processed.`,
+        });
       })
       .finally(() => {
         setDocLoad(false);
@@ -81,6 +85,10 @@ const Index = () => {
       .then((res) => {
         setDocumentTestCases(res);
         setIsUploaded(true);
+        toast({
+          title: "Test Cases Generated successful",
+          description: `${file.name} file test case processed.`,
+        });
       })
       .finally(() => {
         setDocumentTestCasesLoad(false);
