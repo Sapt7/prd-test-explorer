@@ -25,8 +25,8 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <h1 className="text-xl font-semibold tracking-tight">
             Test Case Genie
           </h1>
-          <div className="flex gap-1">
-            <h4 className="text-xs">by</h4>
+          <div className="flex gap-1 items-end">
+            <h4 className="text-2xs">by</h4>
             <h3 className="text-xs font-semibold tracking-tight">
               🧑🏾‍💻 Zero-Bugs-Given 🐞 🚫
             </h3>
