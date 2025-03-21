@@ -28,7 +28,7 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
               PRD Summary
             </Badge>
             {loading ? (
-              <div className="h-6 w-48 bg-gray-200 animate-pulse rounded"></div>
+              <div className="h-6 w-48 bg-gray-200 animate-pulse rounded-sm bg-muted"></div>
             ) : (
               <CardTitle className="text-xl font-semibold">
                 {summary?.title}
@@ -39,7 +39,7 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Features</p>
               {loading ? (
-                <div className="h-6 w-12 bg-gray-200 animate-pulse rounded"></div>
+                <div className="h-6 w-12 bg-gray-200 animate-pulse rounded-sm bg-muted"></div>
               ) : (
                 <p className="text-xl font-medium">{summary?.feature_count}</p>
               )}
@@ -48,7 +48,7 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
             <div className="text-right">
               <p className="text-sm text-muted-foreground">Test Cases</p>
               {testCaseLoading ? (
-                <div className="h-6 w-12 bg-gray-200 animate-pulse rounded"></div>
+                <div className="h-6 w-12 bg-gray-200 animate-pulse rounded-sm bg-muted"></div>
               ) : (
                 <p className="text-xl font-medium">{testCasesTotal}</p>
               )}
@@ -58,7 +58,7 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
       </CardHeader>
       <CardContent>
         {loading ? (
-          <div className="h-10 w-full bg-gray-200 animate-pulse rounded mb-4"></div>
+          <div className="h-10 w-full bg-gray-200 animate-pulse rounded-sm bg-muted mb-4"></div>
         ) : (
           <p className="text-sm text-muted-foreground mb-4">
             {summary?.summary}
@@ -72,12 +72,12 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
               ? Array.from({ length: 5 }).map((_, index) => (
                   <li
                     key={index}
-                    className="h-5 w-3/4 bg-gray-200 animate-pulse rounded"
+                    className="h-5 w-3/4 bg-gray-200 animate-pulse rounded-sm bg-muted"
                   ></li>
                 ))
               : summary?.key_points.map((point, index) => (
                   <li key={index} className="flex items-start gap-2">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs text-primary">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-muted text-xs text-primary">
                       {index + 1}
                     </span>
                     <span className="text-sm">{point}</span>
