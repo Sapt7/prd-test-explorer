@@ -37,11 +37,13 @@ const PRDSummary: React.FC<PRDSummaryProps> = ({
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <p className="text-sm text-muted-foreground">Features</p>
+              <p className="text-sm text-muted-foreground">Key Points</p>
               {loading ? (
                 <div className="h-6 w-12 bg-gray-200 animate-pulse rounded-sm bg-muted"></div>
               ) : (
-                <p className="text-xl font-medium">{summary?.feature_count}</p>
+                <p className="text-xl font-medium">
+                  {summary?.key_points?.length || 0}
+                </p>
               )}
             </div>
             <div className="h-8 w-px bg-border"></div>
