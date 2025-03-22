@@ -104,31 +104,33 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
       selectedTestCases.has(tc.id)
     );
 
-    try {
-      // Execute the test cases
-      const executedTestCases = await executeTestCases(testCasesToExecute);
+    toast({
+      title: "Coming Soon",
+      description: `The feature is yet to be implemented.`,
+      className: "bg-red-300",
+    });
 
-      // Update the test cases with the execution results
-      const updatedTestCases = testCases.map((tc) => {
-        const executed = executedTestCases.find((etc) => etc.id === tc.id);
-        return executed || tc;
-      });
+    setExecuting(false);
 
-      // Update the parent component with the updated test cases
+    // try {
+    //   // Execute the test cases
+    //   const executedTestCases = await executeTestCases(testCasesToExecute);
 
-      toast({
-        title: "Test execution complete",
-        description: `${executedTestCases.length} test cases executed.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Execution failed",
-        description: "There was an error executing the test cases.",
-        variant: "destructive",
-      });
-    } finally {
-      setExecuting(false);
-    }
+    //   // Update the test cases with the execution results
+    //   const updatedTestCases = testCases.map((tc) => {
+    //     const executed = executedTestCases.find((etc) => etc.id === tc.id);
+    //     return executed || tc;
+    //   });
+
+    //   // Update the parent component with the updated test cases
+    // } catch (error) {
+    //   toast({
+    //     title: "Execution failed",
+    //     description: "There was an error executing the test cases.",
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    // }
   };
 
   // Apply filters and search
@@ -184,8 +186,12 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
     <Card className={cn("shadow-sm overflow-hidden", className)}>
       <CardHeader className="pb-3 flex flex-row items-center justify-between">
         <div>
-          <Badge variant="outline" className="mb-2 text-xs font-normal">
-            Test Cases
+          <Badge
+            variant="outline"
+            className="mb-2 text-xs font-normal flex gap-1"
+          >
+            <span>Test Cases</span>
+            {Boolean(testCases.length) && <span>({testCases.length})</span>}
           </Badge>
           <CardTitle className="text-xl font-semibold">Test Suite</CardTitle>
         </div>
@@ -321,27 +327,23 @@ const TestCaseList: React.FC<TestCaseListProps> = ({
                       className="flex-1 cursor-pointer"
                       onClick={() => onTestCaseSelect(testCase)}
                     >
-                      <div className="flex items-center justify-between mb-1">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-medium text-sm">
-                            {testCase.coverage}
-                          </h3>
-                          <span className="text-xs text-muted-foreground">
-                            {testCase.id}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Badge
-                            variant="outline"
-                            className={cn(
-                              "text-xs font-normal border",
-                              priorityColorMap[testCase.priority]
-                            )}
-                          >
-                            {testCase.priority}
-                          </Badge>
-                        </div>
+                      <div className="flex items-center justify-between">
+                        <h3 className="font-medium text-sm">
+                          {testCase.coverage}
+                        </h3>
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            "text-xs font-normal border",
+                            priorityColorMap[testCase.priority]
+                          )}
+                        >
+                          {testCase.priority}
+                        </Badge>
                       </div>
+                      <p className="text-xs text-muted-foreground mb-2">
+                        {testCase.id}
+                      </p>
                       <p className="text-sm text-muted-foreground line-clamp-2">
                         {testCase.description}
                       </p>

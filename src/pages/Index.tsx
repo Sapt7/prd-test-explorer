@@ -76,12 +76,14 @@ const Index = () => {
         toast({
           title: "Summary Extracted successful",
           description: `${file.name} file summary processed.`,
+          className: "bg-sky-200",
         });
       })
       .catch(() => {
         toast({
           title: "Summary could not be generated",
           description: `${file.name} file could not processed.`,
+          className: "bg-red-300",
         });
       })
       .finally(() => {
@@ -94,12 +96,14 @@ const Index = () => {
         toast({
           title: "Test Cases Generated successful",
           description: `${file.name} file test case processed.`,
+          className: "bg-sky-200",
         });
       })
       .catch(() => {
         toast({
           title: "Test Cases could not be generated",
           description: `${file.name} file could not processed.`,
+          className: "bg-red-300",
         });
       })
       .finally(() => {
@@ -140,7 +144,7 @@ const Index = () => {
             <div className="space-y-10">
               <div className="max-w-2xl mx-auto">
                 <h2 className="text-2xl font-semibold mb-6 text-center">
-                  Test Environment
+                  Make Muneesh Test
                 </h2>
                 <p className="text-muted-foreground text-center mb-8">
                   Upload a Product Requirement Document to automatically
@@ -159,7 +163,7 @@ const Index = () => {
                 <DocumentsSection
                   documents={documents}
                   onSelectDocument={handleSelectDocument}
-                  sectionTitle="Previous Test Documents"
+                  sectionTitle="Previous Test Documents (Coming Soon)"
                 />
               )}
             </div>
@@ -192,6 +196,7 @@ const Index = () => {
               </div>
             </div>
           )}
+          <div className="h-32"></div>
         </Container>
       </main>
     </div>

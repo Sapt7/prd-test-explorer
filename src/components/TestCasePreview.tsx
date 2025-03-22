@@ -98,26 +98,33 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
   const handleExecute = async () => {
     setExecuting(true);
 
-    try {
-      // Execute just this test case
-      const [executed] = await executeTestCases([testCase]);
+    toast({
+      title: "Coming Soon",
+      description: `The feature is yet to be implemented.`,
+      className: "bg-red-300",
+    });
 
-      // Update the parent component with the executed test case
-      onTestCaseUpdate(executed);
+    setExecuting(false);
 
-      toast({
-        title: `Test case passed`,
-        description: `Test case ${testCase.id} has been executed.`,
-      });
-    } catch (error) {
-      toast({
-        title: "Execution failed",
-        description: "There was an error executing the test case.",
-        variant: "destructive",
-      });
-    } finally {
-      setExecuting(false);
-    }
+    // try {
+    //   // Execute just this test case
+    //   const [executed] = await executeTestCases([testCase]);
+
+    //   // Update the parent component with the executed test case
+    //   onTestCaseUpdate(executed);
+
+    //   toast({
+    //     title: `Test case passed`,
+    //     description: `Test case ${testCase.id} has been executed.`,
+    //   });
+    // } catch (error) {
+    //   toast({
+    //     title: "Execution failed",
+    //     description: "There was an error executing the test case.",
+    //     variant: "destructive",
+    //   });
+    // } finally {
+    // }
   };
 
   return (
@@ -133,9 +140,20 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
                 {testCase.coverage}
               </CardTitle>
               <div className="flex  gap-2 flex-col">
-                <span className="text-sm text-muted-foreground w-40">
-                  {testCase.id}
-                </span>
+                <div className="flex items-center">
+                  <span className="text-sm text-muted-foreground w-40">
+                    {testCase.id}
+                  </span>
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs font-normal border",
+                      priorityColorMap[testCase.priority]
+                    )}
+                  >
+                    {testCase.priority}
+                  </Badge>
+                </div>
                 <span className="text-sm text-muted-foreground">
                   {testCase.description}
                 </span>
@@ -152,23 +170,7 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
 
       <CardContent className="flex-1 overflow-hidden">
         {!loading && testCase && (
-          <div className="flex items-center gap-2 mb-4">
-            <Badge
-              variant="outline"
-              className={cn(
-                "text-xs font-normal border",
-                priorityColorMap[testCase.priority]
-              )}
-            >
-              {testCase.priority}
-            </Badge>
-            <Badge
-              variant="outline"
-              className={cn("text-xs font-normal border")}
-            >
-              {testCase.test_type}
-            </Badge>
-          </div>
+          <div className="flex items-center gap-2 mb-4"></div>
         )}
 
         <div className="space-y-4">
@@ -254,7 +256,11 @@ const TestCasePreview: React.FC<TestCasePreviewProps> = ({
       </CardContent>
 
       <CardFooter className="border-t p-4">
-        <Button className="w-full" onClick={handleExecute} disabled={executing}>
+        <Button
+          className="w-full"
+          onClick={handleExecute}
+          disabled={executing || loading}
+        >
           {executing ? "Executing..." : "Execute Test Case"}
           <Play className="ml-2 h-3 w-3" />
         </Button>
