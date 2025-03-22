@@ -27,9 +27,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
           <img src="/images/logo.jpg" alt="" height={50} width={50} />
         </div>
         <div className="flex flex-col cursor-pointer" onClick={onLogoClick}>
-          <h1 className="text-xl font-semibold tracking-tight">
-            Test Case Genie
-          </h1>
+          <h1 className="text-xl font-semibold tracking-tight">Muneesh.ai</h1>
           <div className="flex gap-1 items-end">
             <h4 className="text-2xs">by</h4>
             <h3 className="text-xs font-semibold tracking-tight">
