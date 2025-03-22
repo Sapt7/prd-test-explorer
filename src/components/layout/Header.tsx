@@ -39,7 +39,7 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
 
       <div className="flex items-center space-x-4">
         <div className="text-sm font-medium text-muted-foreground">
-          SDET Toolkit V1.0.0
+          SDET Toolkit V1.0.1
         </div>
       </div>
     </header>
